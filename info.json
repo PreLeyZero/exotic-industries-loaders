@@ -1,0 +1,11 @@
+{
+    "name": "exotic-industries-loaders",
+    "version": "0.0.1",
+    "title": "Exotic Industries: Loaders",
+    "author": "PreLeyZero",
+    "factorio_version": "1.1",
+    "description": "Adds loaders in the Exotic-Industries optic.",
+    "dependencies": [
+        "base >= 1.0.0"
+    ]
+}
