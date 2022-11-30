@@ -10,3 +10,5 @@ require("lib/paths")
 --MAIN CONTENT CODE
 --====================================================================================================
 
+-- add loaders
+require("prototypes/loaders")
