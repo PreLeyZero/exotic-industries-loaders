@@ -35,6 +35,8 @@ local container_like = {
     "furnace",
     "lab",
     "rocket-silo",
+    "reactor",
+    "boiler",
 }
 
 local loader_like = {
@@ -57,6 +59,42 @@ function ei_loaders_lib.flip_direction(direction)
     elseif direction == defines.direction.west then
         return defines.direction.east
     end
+end
+
+
+function ei_loaders_lib.get_splitter_positions(splitter, input_pos, output_pos)
+    local new_input_pos = nil
+    local new_output_pos = nil
+    local new_input_pos2 = nil
+    local new_output_pos2 = nil
+    
+    if splitter.direction == defines.direction.north then
+        new_input_pos = {x = input_pos.x + 0.5, y = input_pos.y}
+        new_output_pos = {x = output_pos.x + 0.5, y = output_pos.y}
+
+        new_input_pos2 = {x = input_pos.x - 0.5, y = input_pos.y}
+        new_output_pos2 = {x = output_pos.x - 0.5, y = output_pos.y}
+    elseif splitter.direction == defines.direction.east then
+        new_input_pos = {x = input_pos.x, y = input_pos.y - 0.5}
+        new_output_pos = {x = output_pos.x, y = output_pos.y - 0.5}
+
+        new_input_pos2 = {x = input_pos.x, y = input_pos.y + 0.5}
+        new_output_pos2 = {x = output_pos.x, y = output_pos.y + 0.5}
+    elseif splitter.direction == defines.direction.south then
+        new_input_pos = {x = input_pos.x - 0.5, y = input_pos.y}
+        new_output_pos = {x = output_pos.x - 0.5, y = output_pos.y}
+
+        new_input_pos2 = {x = input_pos.x + 0.5, y = input_pos.y}
+        new_output_pos2 = {x = output_pos.x + 0.5, y = output_pos.y}
+    elseif splitter.direction == defines.direction.west then
+        new_input_pos = {x = input_pos.x, y = input_pos.y + 0.5}
+        new_output_pos = {x = output_pos.x, y = output_pos.y + 0.5}
+
+        new_input_pos2 = {x = input_pos.x, y = input_pos.y - 0.5}
+        new_output_pos2 = {x = output_pos.x, y = output_pos.y - 0.5}
+    end
+
+    return new_input_pos, new_output_pos, new_input_pos2, new_output_pos2
 end
 
 
@@ -153,8 +191,18 @@ function ei_loaders_lib.snap_input(loader, mode)
 end
 
 
+function ei_loaders_lib.call_snap_input(belt, pos)
+    local loader = belt.surface.find_entities_filtered{
+        position = pos,
+        name = loader_like,
+        force = belt.force,
+    }
 
-
+    if #loader > 0 then
+        loader[1].loader_type = "output"
+        ei_loaders_lib.snap_input(loader[1], "belt_like")
+    end
+end
 
 
 --====================================================================================================
@@ -200,27 +248,22 @@ function ei_loaders_lib.snap_belt(belt)
     -- get top and down position of the belt
     local output_pos, input_pos = ei_loaders_lib.get_positions(belt)
 
+    game.print(belt.position.x .. " " .. belt.position.y)
+    game.print(input_pos.x .. " " .. input_pos.y)
+    game.print(output_pos.x .. " " .. output_pos.y)
+
+
+    -- if splitter offset by 0.5 in the direction it is facing
+    if belt.type == "splitter" then
+        input_pos, output_pos, input_pos2, output_pos2 = ei_loaders_lib.get_splitter_positions(belt, input_pos, output_pos)
+
+        ei_loaders_lib.call_snap_input(belt, input_pos2)
+        ei_loaders_lib.call_snap_input(belt, output_pos2)
+    end
+
     -- if there is a loader on these positions snap it
-    local input_loader = belt.surface.find_entities_filtered{
-        position = input_pos,
-        name = loader_like,
-        force = belt.force,
-    }
-    local output_loader = belt.surface.find_entities_filtered{
-        position = output_pos,
-        name = loader_like,
-        force = belt.force,
-    }
-
-    if #input_loader > 0 then
-        input_loader[1].loader_type = "output"
-        ei_loaders_lib.snap_input(input_loader[1], "belt_like")
-    end
-
-    if #output_loader > 0 then
-        output_loader[1].loader_type = "output"
-        ei_loaders_lib.snap_input(output_loader[1], "belt_like")
-    end
+    ei_loaders_lib.call_snap_input(belt, input_pos)
+    ei_loaders_lib.call_snap_input(belt, output_pos)
 end
 
 
