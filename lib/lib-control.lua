@@ -10,6 +10,12 @@ local loaders = {
     ["ei_express-loader"] = true,
 }
 
+local belts = {
+    ["transport-belt"] = true,
+    ["underground-belt"] = true,
+    ["splitter"] = true,
+}
+
 local belt_like = {
     "transport-belt",
     "splitter",
@@ -78,21 +84,6 @@ function ei_loaders_lib.get_positions(entity)
 end
 
 
-function ei_loaders_lib.get_loader_output_input(top, down, entity)
-    -- fix position of the output and input type of the loader
-    -- output: output_pos = top, input_pos = down
-    -- input: output_pos = down, input_pos = top
-   
-    local type = entity.loader_type
-
-    if type == "output" then
-        return down, top
-    elseif type == "input" then
-        return top, down
-    end
-end
-
-
 function ei_loaders_lib.flip_loader_type(loader)
     if loader.loader_type == "input" then
         loader.loader_type = "output"
@@ -109,8 +100,7 @@ end
 
 function ei_loaders_lib.snap_input(loader, mode)
     -- check for belt like and container like
-    local top, down = ei_loaders_lib.get_positions(loader)
-    local _, input_pos = ei_loaders_lib.get_loader_output_input(top, down, loader)
+    local input_pos, output_pos = ei_loaders_lib.get_positions(loader)
 
     if mode == "container_like" then
         -- for container like
@@ -161,15 +151,24 @@ end
 --SNAPPERS AND HANDLER
 --====================================================================================================
 
+-- building handler
+---------------------------------------------------------
 function ei_loaders_lib.on_built_entity(e)
 
-    if e["created_entity"].name == "ei_loader" then
+    -- if entity is a loader
+    if loaders[e["created_entity"].name] then
         ei_loaders_lib.snap_loader(e["created_entity"])
+    end
+
+    -- if entity is a belt
+    if belts[e["created_entity"].name] then
+        ei_loaders_lib.snap_belt(e["created_entity"])
     end
 
 end
 
-
+-- snapping functions
+---------------------------------------------------------
 function ei_loaders_lib.snap_loader(loader)
     if not loader.valid then
         return
@@ -183,6 +182,14 @@ function ei_loaders_lib.snap_loader(loader)
 end
 
 
+function ei_loaders_lib.snap_belt(belt)
+    if not belt.valid then
+        return
+    end
+
+    -- get top and down position of the belt
+    local top, down = ei_loaders_lib.get_positions(belt)
+end
 
 
 
