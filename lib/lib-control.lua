@@ -248,11 +248,6 @@ function ei_loaders_lib.snap_belt(belt)
     -- get top and down position of the belt
     local output_pos, input_pos = ei_loaders_lib.get_positions(belt)
 
-    game.print(belt.position.x .. " " .. belt.position.y)
-    game.print(input_pos.x .. " " .. input_pos.y)
-    game.print(output_pos.x .. " " .. output_pos.y)
-
-
     -- if splitter offset by 0.5 in the direction it is facing
     if belt.type == "splitter" then
         input_pos, output_pos, input_pos2, output_pos2 = ei_loaders_lib.get_splitter_positions(belt, input_pos, output_pos)
@@ -267,7 +262,4 @@ function ei_loaders_lib.snap_belt(belt)
 end
 
 
-
 return ei_loaders_lib
-
-
