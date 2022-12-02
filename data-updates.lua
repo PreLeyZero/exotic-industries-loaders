@@ -1,4 +1,4 @@
-ei_loaders_lib = require("lib/lib")
+ei_loaders_lib = require("lib/lib-data")
 
 --====================================================================================================
 --CONTENT UPDATES

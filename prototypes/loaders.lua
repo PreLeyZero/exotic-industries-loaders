@@ -1,4 +1,4 @@
-ei_loaders_lib = require("lib/lib")
+ei_loaders_lib = require("lib/lib-data")
 
 --====================================================================================================
 --1x1 LOADERS
@@ -11,8 +11,8 @@ data:extend({
         icon = ei_loaders_item_path.."loader.png",
         icon_size = 64,
         icon_mipmaps = 4,
-        subgroup = "inserter",
-        order = "z-b",
+        subgroup = "belt",
+        order = "h[ei_loader]_a",
         place_result = "ei_loader",
         stack_size = 50
     },
@@ -22,8 +22,8 @@ data:extend({
         icon = ei_loaders_item_path.."fast-loader.png",
         icon_size = 64,
         icon_mipmaps = 4,
-        subgroup = "inserter",
-        order = "z-b",
+        subgroup = "belt",
+        order = "h[ei_loader]_b",
         place_result = "ei_fast-loader",
         stack_size = 50
     },
@@ -33,8 +33,8 @@ data:extend({
         icon = ei_loaders_item_path.."express-loader.png",
         icon_size = 64,
         icon_mipmaps = 4,
-        subgroup = "inserter",
-        order = "z-b",
+        subgroup = "belt",
+        order = "h[ei_loader]_c",
         place_result = "ei_express-loader",
         stack_size = 50
     },
@@ -42,11 +42,12 @@ data:extend({
         name = "ei_loader",
         type = "recipe",
         category = "crafting",
-        energy_required = 4,
+        energy_required = 2,
         ingredients =
         {
-            {"stack-inserter", 4},
-            {"low-density-structure", 6},
+            {"transport-belt", 4},
+            {"electronic-circuit", 6},
+            {"iron-plate", 6},
         },
         result = "ei_loader",
         result_count = 1,
@@ -58,11 +59,12 @@ data:extend({
         name = "ei_fast-loader",
         type = "recipe",
         category = "crafting",
-        energy_required = 4,
+        energy_required = 3,
         ingredients =
         {
-            {"stack-inserter", 4},
-            {"low-density-structure", 6},
+            {"ei_loader", 1},
+            {"electronic-circuit", 20},
+            {"iron-gear-wheel", 20},
         },
         result = "ei_fast-loader",
         result_count = 1,
@@ -77,8 +79,9 @@ data:extend({
         energy_required = 4,
         ingredients =
         {
-            {"stack-inserter", 4},
-            {"low-density-structure", 6},
+            {"ei_fast-loader", 1},
+            {"advanced-circuit", 20},
+            {"iron-gear-wheel", 40},
         },
         result = "ei_express-loader",
         result_count = 1,

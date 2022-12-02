@@ -81,7 +81,6 @@ function ei_loaders_lib.make_loader(tier, next_upgrade, belt_animation_set, spee
     data:extend({loader})
 end
 
-
 return ei_loaders_lib
 
 
