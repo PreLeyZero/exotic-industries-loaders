@@ -4,6 +4,8 @@ local ei_loaders_lib = {}
 --DATA VALUES
 --====================================================================================================
 
+-- for building handler
+---------------------------------------------------------
 local loaders = {
     ["ei_loader"] = true,
     ["ei_fast-loader"] = true,
@@ -16,6 +18,8 @@ local belts = {
     ["splitter"] = true,
 }
 
+-- for utility functions
+---------------------------------------------------------
 local belt_like = {
     "transport-belt",
     "splitter",
@@ -31,6 +35,12 @@ local container_like = {
     "furnace",
     "lab",
     "rocket-silo",
+}
+
+local loader_like = {
+    "ei_loader",
+    "ei_fast-loader",
+    "ei_express-loader",
 }
 
 --====================================================================================================
@@ -161,7 +171,7 @@ function ei_loaders_lib.on_built_entity(e)
     end
 
     -- if entity is a belt
-    if belts[e["created_entity"].name] then
+    if belts[e["created_entity"].type] then
         ei_loaders_lib.snap_belt(e["created_entity"])
     end
 
@@ -176,7 +186,7 @@ function ei_loaders_lib.snap_loader(loader)
 
     -- snap loader to belt or conatiner like entities
 
-    -- first treat input position
+    -- treat input position
     ei_loaders_lib.snap_input(loader, "container_like")
     ei_loaders_lib.snap_input(loader, "belt_like")
 end
@@ -188,7 +198,29 @@ function ei_loaders_lib.snap_belt(belt)
     end
 
     -- get top and down position of the belt
-    local top, down = ei_loaders_lib.get_positions(belt)
+    local output_pos, input_pos = ei_loaders_lib.get_positions(belt)
+
+    -- if there is a loader on these positions snap it
+    local input_loader = belt.surface.find_entities_filtered{
+        position = input_pos,
+        name = loader_like,
+        force = belt.force,
+    }
+    local output_loader = belt.surface.find_entities_filtered{
+        position = output_pos,
+        name = loader_like,
+        force = belt.force,
+    }
+
+    if #input_loader > 0 then
+        input_loader[1].loader_type = "output"
+        ei_loaders_lib.snap_input(input_loader[1], "belt_like")
+    end
+
+    if #output_loader > 0 then
+        output_loader[1].loader_type = "output"
+        ei_loaders_lib.snap_input(output_loader[1], "belt_like")
+    end
 end
 
 
