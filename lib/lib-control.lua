@@ -10,6 +10,7 @@ local loaders = {
     ["ei_loader"] = true,
     ["ei_fast-loader"] = true,
     ["ei_express-loader"] = true,
+    ["ei_neo-loader"] = true,
 }
 
 local belts = {
@@ -43,6 +44,7 @@ local loader_like = {
     "ei_loader",
     "ei_fast-loader",
     "ei_express-loader",
+    "ei_neo-loader",
 }
 
 --====================================================================================================
