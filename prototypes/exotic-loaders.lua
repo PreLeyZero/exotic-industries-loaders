@@ -46,7 +46,7 @@ ei_loaders_lib.make_loader("neo", nil, neo_belt.belt_animation_set, neo_belt.spe
 -- set next replacable for express loader
 data.raw["loader-1x1"]["ei_express-loader"].next_upgrade = "ei_neo-loader"
 
-table.insert(data.raw["technology"]["ei_neo-logisitcs"].effects, {
+table.insert(data.raw["technology"]["ei_neo-logistics"].effects, {
     type = "unlock-recipe",
     recipe = "ei_neo-loader"
 })
