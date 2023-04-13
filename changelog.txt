@@ -1,10 +1,17 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.3
+Date: 13.04.2023
+  Features:
+    - added ru locale (PR #2)
+  Bugfixes:
+    - fixed issue with loader snaping when upgrading using hand or nanonbots
+---------------------------------------------------------------------------------------------------
 Version: 0.0.2
-Date: 2023-02-01
+Date: 02.01.2023
   Bugfixes:
     - fixed issue when using with Exotic Industries
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.1
-Date: 2022-07-27
+Date: 27.07.2022
   Features:
     - First version

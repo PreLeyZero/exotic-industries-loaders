@@ -102,35 +102,40 @@ end
 
 function ei_loaders_lib.get_positions(entity)
     -- get the position of the entity and the direction it is facing
-    -- return top and down position
+    -- return output and input position
 
-    -- down [->] top
+    -- input [->] output
 
     -- or
 
-    -- down
+    -- input
     -- [V]
-    -- top
+    -- output
 
-    local top = entity.position
-    local down = entity.position
+    -- factorio positions:
+    -- | -y
+    -- |
+    -- ------> +x
+
+    local output = entity.position
+    local input = entity.position
     local direction = entity.direction
 
     if direction == defines.direction.north then
-        top.y = top.y - 1
-        down.y = down.y + 1
+        output.y = output.y - 1
+        input.y = input.y + 1
     elseif direction == defines.direction.east then
-        top.x = top.x + 1
-        down.x = down.x - 1
+        output.x = output.x + 1
+        input.x = input.x - 1
     elseif direction == defines.direction.south then
-        top.y = top.y + 1
-        down.y = down.y - 1
+        output.y = output.y + 1
+        input.y = input.y - 1
     elseif direction == defines.direction.west then
-        top.x = top.x - 1
-        down.x = down.x + 1
+        output.x = output.x - 1
+        input.x = input.x + 1
     end
 
-    return top, down
+    return output, input
 end
 
 
@@ -150,27 +155,35 @@ end
 
 function ei_loaders_lib.snap_input(loader, mode)
     -- check for belt like and container like
-    local input_pos, output_pos = ei_loaders_lib.get_positions(loader)
+    local output_pos, input_pos = ei_loaders_lib.get_positions(loader)
 
     if mode == "container_like" then
         -- for container like
         local container_like = loader.surface.find_entities_filtered{
-            position = input_pos,
+            position = output_pos,
             type = container_like,
             force = loader.force,
         }
 
         if #container_like > 0 then
-            -- here the belt part of the loader is always facing to the container
-            -- like, therfore we need to flip the entire loader
-            loader.direction = ei_loaders_lib.flip_direction(loader.direction)
+            -- is the belt part of the loader facing the container?
+            local loader_type = loader.loader_type
+
+            -- output is default loader type
+            if loader_type == "output" then
+                -- here the belt part of the loader is always facing to the container
+                -- like, therfore we need to flip the entire loader
+                loader.direction = ei_loaders_lib.flip_direction(loader.direction)
+
+                game.print("flipped loader: container_like")
+            end
         end
     end
     
     if mode == "belt_like" then
         -- for belt like
         local belt_like = loader.surface.find_entities_filtered{
-            position = input_pos,
+            position = output_pos,
             type = belt_like,
             force = loader.force,
         }
@@ -187,6 +200,7 @@ function ei_loaders_lib.snap_input(loader, mode)
             -- only need to flip loader if loader type is wrong way
             if belt_direction == ei_loaders_lib.flip_direction(loader_direction) then
                 ei_loaders_lib.flip_loader_type(loader)
+                game.print("flipped loader: belt_like")
             end
         end
     end
